@@ -25,7 +25,8 @@ public class CategoryService {
 
     public CategoryResponse createCategory(CategoryRequest request) {
         Category category = categoryMapper.toCategory(request);
-        return categoryMapper.toCategoryResponse(categoryRepository.save(category));
+        Category savedCategory = categoryRepository.save(category);
+        return categoryMapper.toCategoryResponse(savedCategory);
     }
 
     public CategoryResponse getCategoryById(int id) {
