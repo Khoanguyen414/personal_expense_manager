@@ -29,7 +29,7 @@ public class CategoryService {
         return categoryMapper.toCategoryResponse(savedCategory);
     }
 
-    public CategoryResponse getCategoryById(int id) {
+    public CategoryResponse getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
         
@@ -42,7 +42,7 @@ public class CategoryService {
         return categories.stream().map(categoryMapper::toCategoryResponse).toList();
     }
 
-    public CategoryResponse updateCategory(int id, CategoryRequest request) {
+    public CategoryResponse updateCategory(Long id, CategoryRequest request) {
         Category existingCategory = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
@@ -54,7 +54,7 @@ public class CategoryService {
         return categoryMapper.toCategoryResponse(updatedCategory);  
     }
 
-    public void deleteCategory(int id) {
+    public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 

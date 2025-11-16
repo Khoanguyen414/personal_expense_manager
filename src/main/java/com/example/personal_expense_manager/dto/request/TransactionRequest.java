@@ -22,5 +22,5 @@ public class TransactionRequest {
     String description;
     LocalDate date;
     TransactionType type;
-    int categoryId;     
+    Long categoryId;     
 }

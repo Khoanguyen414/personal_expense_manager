@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.personal_expense_manager.entity.Transaction;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Integer>{
+public interface TransactionRepository extends JpaRepository<Transaction, Long>{
 
 }

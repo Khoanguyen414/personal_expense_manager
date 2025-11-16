@@ -18,11 +18,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransactionResponse {
-    int id;
+    Long id;
     BigDecimal amount;
     String description;
     LocalDate date;
     TransactionType type;
-    int categoryId;
+    Long categoryId;
     String categoryName;   
 }
