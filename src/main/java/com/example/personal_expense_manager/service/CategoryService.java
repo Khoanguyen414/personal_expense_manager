@@ -2,7 +2,6 @@ package com.example.personal_expense_manager.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.personal_expense_manager.dto.request.CategoryRequest;
@@ -18,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
