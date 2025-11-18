@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.personal_expense_manager.entity.Category;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long>{
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 }
