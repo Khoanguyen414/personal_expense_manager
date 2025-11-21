@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.personal_expense_manager.dto.request.TransactionRequest;
+import com.example.personal_expense_manager.dto.response.ExpenseStatResponse;
 import com.example.personal_expense_manager.dto.response.TransactionResponse;
 import com.example.personal_expense_manager.service.TransactionService;
 
@@ -12,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -57,4 +61,14 @@ public class TransactionController {
     public void deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
     }
+
+    @GetMapping("/statistics")
+    public List<ExpenseStatResponse> getExpenseStatistic(
+        @RequestParam(required = false) LocalDate start, 
+        @RequestParam(required = false) LocalDate end
+
+    ) {
+        return transactionService.getExpenseStatistic(start, end);
+    }
+    
 }
