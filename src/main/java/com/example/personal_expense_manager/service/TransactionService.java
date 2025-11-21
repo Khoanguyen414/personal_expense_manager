@@ -1,10 +1,12 @@
 package com.example.personal_expense_manager.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.example.personal_expense_manager.dto.request.TransactionRequest;
+import com.example.personal_expense_manager.dto.response.ExpenseStatResponse;
 import com.example.personal_expense_manager.dto.response.TransactionResponse;
 import com.example.personal_expense_manager.entity.Category;
 import com.example.personal_expense_manager.entity.Transaction;
@@ -76,5 +78,16 @@ public class TransactionService {
         Transaction transaction = transactionRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
         transactionRepository.delete(transaction);
+    }
+
+    public List<ExpenseStatResponse> getExpenseStatistic(LocalDate start, LocalDate end) {
+        if (start == null) {
+            start = LocalDate.now().withDayOfMonth(1);
+        }
+
+        if (end == null) {
+            end = LocalDate.now();
+        }
+        return transactionRepository.getExpenseStatistic(start, end);
     }
 }
