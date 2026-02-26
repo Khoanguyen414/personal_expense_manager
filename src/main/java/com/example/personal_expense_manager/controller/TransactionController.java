@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.personal_expense_manager.dto.request.TransactionRequest;
 import com.example.personal_expense_manager.dto.response.ExpenseStatResponse;
+import com.example.personal_expense_manager.dto.response.TimeStatResponse;
 import com.example.personal_expense_manager.dto.response.TransactionResponse;
 import com.example.personal_expense_manager.service.TransactionService;
 
@@ -64,11 +65,32 @@ public class TransactionController {
 
     @GetMapping("/statistics")
     public List<ExpenseStatResponse> getExpenseStatistic(
-        @RequestParam(required = false) LocalDate start, 
-        @RequestParam(required = false) LocalDate end
+        @RequestParam(required = false) LocalDate startDate, 
+        @RequestParam(required = false) LocalDate endDate
 
     ) {
-        return transactionService.getExpenseStatistic(start, end);
+        return transactionService.getExpenseStatistic(startDate, endDate);
     }
     
+    @GetMapping("/statistics/daily")
+    public List<TimeStatResponse> getDailyStatistic(
+            @RequestParam(required = false) LocalDate startDate, 
+            @RequestParam(required = false) LocalDate endDate) {
+        
+        return transactionService.getDailyStatistic(startDate, endDate);
+    }
+
+    @GetMapping("/statistics/monthly")
+    public List<TimeStatResponse> getMonthlyStatistic(
+            @RequestParam(required = false) LocalDate startDate, 
+            @RequestParam(required = false) LocalDate endDate) {
+        return transactionService.getMonthlyStatistic(startDate, endDate);
+    }
+
+    @GetMapping("/statistics/yearly")
+    public List<TimeStatResponse> getYearlyStatistic(
+            @RequestParam(required = false) LocalDate startDate, 
+            @RequestParam(required = false) LocalDate endDate) {
+        return transactionService.getYearlyStatistic(startDate, endDate);
+    }
 }

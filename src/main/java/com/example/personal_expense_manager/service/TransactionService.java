@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.personal_expense_manager.dto.request.TransactionRequest;
 import com.example.personal_expense_manager.dto.response.ExpenseStatResponse;
+import com.example.personal_expense_manager.dto.response.TimeStatResponse;
 import com.example.personal_expense_manager.dto.response.TransactionResponse;
 import com.example.personal_expense_manager.entity.Category;
 import com.example.personal_expense_manager.entity.Transaction;
@@ -80,14 +81,36 @@ public class TransactionService {
         transactionRepository.delete(transaction);
     }
 
-    public List<ExpenseStatResponse> getExpenseStatistic(LocalDate start, LocalDate end) {
-        if (start == null) {
-            start = LocalDate.now().withDayOfMonth(1);
+    public List<ExpenseStatResponse> getExpenseStatistic(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) {
+            startDate = LocalDate.now().withDayOfMonth(1);
         }
 
-        if (end == null) {
-            end = LocalDate.now();
+        if (endDate == null) {
+            endDate = LocalDate.now();
         }
-        return transactionRepository.getExpenseStatistic(start, end);
+        return transactionRepository.getExpenseStatistic(startDate, endDate);
+    }
+
+    public List<TimeStatResponse> getDailyStatistic(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) {
+            startDate = LocalDate.now().withDayOfMonth(1);
+        }
+        if (endDate == null) {
+            endDate = LocalDate.now();
+        }
+        return transactionRepository.getDailyStatistic(startDate, endDate);
+    }
+
+    public List<TimeStatResponse> getMonthlyStatistic(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) startDate = LocalDate.now().withDayOfYear(1); 
+        if (endDate == null) endDate = LocalDate.now();
+        return transactionRepository.getMonthlyStatistic(startDate, endDate);
+    }
+
+    public List<TimeStatResponse> getYearlyStatistic(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) startDate = LocalDate.now().minusYears(5).withDayOfYear(1); 
+        if (endDate == null) endDate = LocalDate.now();
+        return transactionRepository.getYearlyStatistic(startDate, endDate);
     }
 }
