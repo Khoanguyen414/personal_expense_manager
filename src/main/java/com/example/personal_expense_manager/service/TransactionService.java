@@ -1,16 +1,22 @@
 package com.example.personal_expense_manager.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.personal_expense_manager.dto.request.TransactionRequest;
+import com.example.personal_expense_manager.dto.response.BalanceStatResponse;
 import com.example.personal_expense_manager.dto.response.ExpenseStatResponse;
 import com.example.personal_expense_manager.dto.response.TimeStatResponse;
 import com.example.personal_expense_manager.dto.response.TransactionResponse;
 import com.example.personal_expense_manager.entity.Category;
 import com.example.personal_expense_manager.entity.Transaction;
+import com.example.personal_expense_manager.enums.TransactionType;
 import com.example.personal_expense_manager.exception.ResourceNotFoundException;
 import com.example.personal_expense_manager.mapper.TransactionMapper;
 import com.example.personal_expense_manager.repository.CategoryRepository;
@@ -92,25 +98,59 @@ public class TransactionService {
         return transactionRepository.getExpenseStatistic(startDate, endDate);
     }
 
-    public List<TimeStatResponse> getDailyStatistic(LocalDate startDate, LocalDate endDate) {
-        if (startDate == null) {
-            startDate = LocalDate.now().withDayOfMonth(1);
-        }
-        if (endDate == null) {
-            endDate = LocalDate.now();
-        }
-        return transactionRepository.getDailyStatistic(startDate, endDate);
+    public List<BalanceStatResponse> getDailyStatistic(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) startDate = LocalDate.now().withDayOfMonth(1);
+        if (endDate == null) endDate = LocalDate.now();
+
+        List<TimeStatResponse> rawStats = transactionRepository.getDailyStatistic(startDate, endDate);
+
+        return calculateBalance(rawStats);
     }
 
-    public List<TimeStatResponse> getMonthlyStatistic(LocalDate startDate, LocalDate endDate) {
+    public List<BalanceStatResponse> getMonthlyStatistic(LocalDate startDate, LocalDate endDate) {
         if (startDate == null) startDate = LocalDate.now().withDayOfYear(1); 
         if (endDate == null) endDate = LocalDate.now();
-        return transactionRepository.getMonthlyStatistic(startDate, endDate);
+        
+        List<TimeStatResponse> rawStats = transactionRepository.getMonthlyStatistic(startDate, endDate);
+
+        return calculateBalance(rawStats);
     }
 
-    public List<TimeStatResponse> getYearlyStatistic(LocalDate startDate, LocalDate endDate) {
+    public List<BalanceStatResponse> getYearlyStatistic(LocalDate startDate, LocalDate endDate) {
         if (startDate == null) startDate = LocalDate.now().minusYears(5).withDayOfYear(1); 
         if (endDate == null) endDate = LocalDate.now();
-        return transactionRepository.getYearlyStatistic(startDate, endDate);
+        
+        List<TimeStatResponse> rawStats = transactionRepository.getYearlyStatistic(startDate, endDate);
+
+        return calculateBalance(rawStats);
+    }
+
+    private List<BalanceStatResponse> calculateBalance(List<TimeStatResponse> rawStats) {
+        Map<String, List<TimeStatResponse>> groupedStats = rawStats.stream()
+            .collect(Collectors.groupingBy(TimeStatResponse::getTimePeriod));
+
+        return groupedStats.entrySet().stream().map(entry -> {
+            String period = entry.getKey();
+            List<TimeStatResponse> periodStats = entry.getValue();
+
+            BigDecimal income = periodStats.stream()
+                .filter(s -> s.getType() == TransactionType.INCOME)
+                .map(TimeStatResponse::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            BigDecimal expense = periodStats.stream()
+                .filter(s -> s.getType() == TransactionType.EXPENSE)
+                .map(TimeStatResponse::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            return BalanceStatResponse.builder()
+                .timePeriod(period)
+                .totalIncome(income)
+                .totalExpense(expense)
+                .balance(income.subtract(expense))
+                .build();
+        })
+        .sorted(Comparator.comparing(BalanceStatResponse::getTimePeriod))
+        .collect(Collectors.toList());
     }
 }

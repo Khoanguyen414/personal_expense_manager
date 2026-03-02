@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.personal_expense_manager.dto.request.TransactionRequest;
+import com.example.personal_expense_manager.dto.response.BalanceStatResponse;
 import com.example.personal_expense_manager.dto.response.ExpenseStatResponse;
-import com.example.personal_expense_manager.dto.response.TimeStatResponse;
 import com.example.personal_expense_manager.dto.response.TransactionResponse;
 import com.example.personal_expense_manager.service.TransactionService;
 
@@ -73,7 +73,7 @@ public class TransactionController {
     }
     
     @GetMapping("/statistics/daily")
-    public List<TimeStatResponse> getDailyStatistic(
+    public List<BalanceStatResponse> getDailyStatistic(
             @RequestParam(required = false) LocalDate startDate, 
             @RequestParam(required = false) LocalDate endDate) {
         
@@ -81,14 +81,14 @@ public class TransactionController {
     }
 
     @GetMapping("/statistics/monthly")
-    public List<TimeStatResponse> getMonthlyStatistic(
+    public List<BalanceStatResponse> getMonthlyStatistic(
             @RequestParam(required = false) LocalDate startDate, 
             @RequestParam(required = false) LocalDate endDate) {
         return transactionService.getMonthlyStatistic(startDate, endDate);
     }
 
     @GetMapping("/statistics/yearly")
-    public List<TimeStatResponse> getYearlyStatistic(
+    public List<BalanceStatResponse> getYearlyStatistic(
             @RequestParam(required = false) LocalDate startDate, 
             @RequestParam(required = false) LocalDate endDate) {
         return transactionService.getYearlyStatistic(startDate, endDate);
