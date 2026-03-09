@@ -64,10 +64,7 @@ public class TransactionService {
         Transaction existingTransaction = transactionRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
         
-        existingTransaction.setAmount(request.getAmount());
-        existingTransaction.setDescription(request.getDescription());
-        existingTransaction.setDate(request.getDate());
-        existingTransaction.setType(request.getType());
+        transactionMapper.updateTransaction(request, existingTransaction);
 
         Long newCategoryId = request.getCategoryId();
         if (newCategoryId != null && !newCategoryId.equals(existingTransaction.getCategory().getId())) {
